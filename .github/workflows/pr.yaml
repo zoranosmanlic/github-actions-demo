@@ -32,9 +32,11 @@ jobs:
         wget https://github.com/slsa-framework/slsa-verifier/releases/download/v2.4.1/slsa-verifier-linux-amd64
         mv slsa-verifier-linux-amd64 slsa-verifier
         chmod +x slsa-verifier
-        wget https://github.com/google/go-containerregistry/releases/download/vVERSION/crane-linux-amd64
-        mv crane-linux-amd64 /usr/local/bin/crane
-        chmod +x /usr/local/bin/crane
+        VERSION=$(curl -s "https://api.github.com/repos/google/go-containerregistry/releases/latest" | jq -r '.tag_name')
+        OS=Linux
+        ARCH=x86_64
+        curl -sL "https://github.com/google/go-containerregistry/releases/download/${VERSION}/go-containerregistry_${OS}_${ARCH}.tar.gz" > go-containerregistry.tar.gz
+        tar -zxvf go-containerregistry.tar.gz -C /usr/local/bin/crane
         IMAGE=${{ secrets.DOCKERHUB_USERNAME }}/github-actions-demo:pr-${{ github.event.pull_request.number }}
         IMAGE="${IMAGE}@"$(crane digest "${IMAGE}")
         ./slsa-verifier verify-image "$IMAGE" \
