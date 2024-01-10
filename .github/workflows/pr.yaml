@@ -33,6 +33,7 @@ jobs:
         mv slsa-verifier-linux-amd64 slsa-verifier
         chmod +x slsa-verifier
         IMAGE=${{ secrets.DOCKERHUB_USERNAME }}/github-actions-demo:pr-${{ github.event.pull_request.number }}
+        IMAGE="${IMAGE}@"$(crane digest "${IMAGE}")
         ./slsa-verifier verify-image "$IMAGE" \
         --source-uri github.com/zoranosmanlic/github-actions-demo \
         --print-provenance 
