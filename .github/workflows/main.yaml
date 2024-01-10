@@ -27,4 +27,12 @@ jobs:
         tags: |
           ${{ secrets.DOCKERHUB_USERNAME }}/github-actions-demo:latest
           ${{ secrets.DOCKERHUB_USERNAME }}/github-actions-demo:${{ github.sha }}
-        
+    - name: slsa verify
+      id: slsa-verify
+      run: |
+        wget https://github.com/slsa-framework/slsa-verifier/releases/download/v2.4.1/slsa-verifier-linux-amd64
+        mv slsa-verifier-linux-amd64 slsa-verifier
+        chmod +x slsa-verifier
+        ./slsa-verifier verify-image ${{ secrets.DOCKERHUB_USERNAME }}/github-actions-demo:${{ github.sha }} \
+        --source-uri github.com/zoranosmanlic/github-actions-demo \
+        --print-provenance 
