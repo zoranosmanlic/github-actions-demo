@@ -26,15 +26,4 @@ jobs:
         push: true
         tags: |
           ${{ secrets.DOCKERHUB_USERNAME }}/github-actions-demo:latest
-          ${{ secrets.DOCKERHUB_USERNAME }}/github-actions-demo:${{ github.sha }}
-    - uses: azure/k8s-set-context@v1
-      with:
-        method: kubeconfig
-        kubeconfig: ${{ secrets.KUBE_CONFIG }}
-    - name: Deploy the app
-      run: |
-        cd kustomize/overlays/production
-        kustomize edit set image ${{ secrets.DOCKERHUB_USERNAME }}/github-actions-demo=${{ secrets.DOCKERHUB_USERNAME }}/github-actions-demo:$GITHUB_SHA
-        kustomize build | kubectl apply --filename -
-        kubectl --namespace production rollout status deployment github-actions-demo
- 
+          ${{ secrets.DOCKERHUB_USERNAME }}/github-actions-demo:${{ github.sha }} 
