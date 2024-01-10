@@ -26,3 +26,8 @@ jobs:
         push: true
         tags: |
           ${{ secrets.DOCKERHUB_USERNAME }}/github-actions-demo:pr-${{ github.event.pull_request.number }}
+    - name: slsa verify
+      id: slsa-verify
+      run: |
+        go install github.com/slsa-framework/slsa-verifier/v2/cli/slsa-verifier@v2.4.1
+        slsa-verifier verify-image ${{ secrets.DOCKERHUB_USERNAME }}/github-actions-demo:pr-${{ github.event.pull_request.number }} --print-provenance
